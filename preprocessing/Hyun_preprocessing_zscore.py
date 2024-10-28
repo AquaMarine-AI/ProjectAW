@@ -28,11 +28,14 @@ def replace_outliers_zscore(df, column, threshold=2):
 
 def main():
     # Load the CSV file
-    file_path = 'Hyun_augumented_data_4cycles_16months_feed_pressure_10min_final.csv'
+    file_path = './dataset/전기전도도_유입압력_10분간격_1주일.csv'
     data = pd.read_csv(file_path)
     
     # Convert 'Time' column to datetime for easier manipulation
     data['Time'] = pd.to_datetime(data['Time'])
+    
+    # Create a copy of the original feed pressure data for visualization
+    data['original_feed_pressure'] = data['feed_pressure']
     
     # Create a rolling window of size 10 and calculate the average
     data['rolling_mean'] = data['feed_pressure'].rolling(window=10).mean()
@@ -49,17 +52,21 @@ def main():
     data_cleaned['smoothed_feed_pressure'] = data_cleaned['feed_pressure'].rolling(window=5, min_periods=1).mean()
 
     # Save the preprocessed data to a new CSV file
-    data_cleaned.to_csv('preprocessing_final_zscore_replaced.csv', index=False)
+    data_cleaned.to_csv('전처리된_전기전도도_유입압력_10분간격_1주일.csv', index=False)
 
     # Plot the original, modified, and smoothed data
     plt.figure(figsize=(14, 7))
+    plt.plot(data_cleaned['Time'], data_cleaned['original_feed_pressure'], label='Original Feed Pressure', color='red', alpha=0.5)
     plt.plot(data_cleaned['Time'], data_cleaned['feed_pressure'], label='Modified Feed Pressure', color='orange', alpha=0.6)
     plt.plot(data_cleaned['Time'], data_cleaned['smoothed_feed_pressure'], label='Smoothed Feed Pressure', color='blue', alpha=0.8)
+    
     plt.xlabel('Time')
     plt.ylabel('Feed Pressure')
-    plt.title('Feed Pressure with Z-Score Outlier Replacement and Smoothing')
+    plt.title('Feed Pressure with Original, Modified, and Smoothed Data')
     plt.legend()
     plt.grid(True)
+    plt.xticks(rotation=45)
+    plt.tight_layout()
     plt.show()
 
 if __name__ == "__main__":
