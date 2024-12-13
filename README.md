@@ -1,3 +1,6 @@
+## 소프트웨어 구성도
+![alt text](/images/system_architecture.png)
+
 ## Commit Convention
 
 - **커밋 메시지 규칙**
